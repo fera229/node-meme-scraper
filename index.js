@@ -29,7 +29,7 @@ async function fetchAndDownloadImgs() {
     for (let i = 0; i < imgUrls.length; i++) {
       const currentImgUrl = imgUrls[i];
       const fileNumber = String(i + 1).padStart(2, '0');
-      const filePath = path.join(memesDir, `${fileNumber}.jpeg`);
+      const filePath = path.join(memesDir, `${fileNumber}.jpg`);
 
       // download binary data via axios with response type as array buffer
       const response = await axios.get(currentImgUrl, {
