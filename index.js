@@ -1,11 +1,11 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import fs from 'fs';
-import path from 'path';
 
 const url = 'https://memegen-link-examples-upleveled.netlify.app/';
 
-async function fetchImgs(url) {
+async function fetchAndDownloadImgs() {
   try {
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
@@ -14,21 +14,30 @@ async function fetchImgs(url) {
     const memesDir = path.join(process.cwd(), 'memes');
 
     $('img').each((index, element) => {
+      const imgURL = $(element).attr('src');
+
       if (imgUrls.length < 10) {
-        const imgURL = $(element).attr('src');
         imgUrls.push(imgURL);
       }
     });
-    console.log(imgUrls);
+    // console.log(imgUrls);
     for (let i = 0; i < imgUrls.length; i++) {
       const currentImgUrl = imgUrls[i];
       const fileNumber = String(i + 1).padStart(2, '0');
-      const filePath = (memesDir, `${fileNumber}.jpeg`);
-      console.log(fileNumber);
+      const filePath = path.join(memesDir, `${fileNumber}.jpeg`);
+
+      // download binary data via axios with response type as array buffer
+      const response = await axios.get(currentImgUrl, {
+        responseType: 'arraybuffer',
+      });
+
+      // write the data locally to a file
+      fs.writeFileSync(filePath, response.data);
+      console.log(`Downloaded: ${filePath}`);
     }
   } catch (error) {
     console.error('Error fetching images:', error);
   }
 }
 
-await fetchImgs(url);
+await fetchAndDownloadImgs(url);
