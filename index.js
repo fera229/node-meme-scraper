@@ -25,7 +25,6 @@ async function fetchAndDownloadImgs() {
         imgUrls.push(imgURL);
       }
     });
-    // console.log(imgUrls);
     for (let i = 0; i < imgUrls.length; i++) {
       const currentImgUrl = imgUrls[i];
       const fileNumber = String(i + 1).padStart(2, '0');
