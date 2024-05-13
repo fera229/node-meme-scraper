@@ -5,13 +5,18 @@ import * as cheerio from 'cheerio';
 
 const url = 'https://memegen-link-examples-upleveled.netlify.app/';
 
+let memesDir = path.join(process.cwd(), 'memes');
+if (!fs.existsSync(memesDir)) {
+  fs.mkdirSync(memesDir);
+}
+
 async function fetchAndDownloadImgs() {
   try {
     const { data } = await axios.get(url);
     const $ = cheerio.load(data);
     const imgUrls = [];
 
-    const memesDir = path.join(process.cwd(), 'memes');
+    memesDir = path.join(process.cwd(), 'memes');
 
     $('img').each((index, element) => {
       const imgURL = $(element).attr('src');
